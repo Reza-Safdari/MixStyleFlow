@@ -1,0 +1,65 @@
+{
+  "name": "training_mean_var_nflows_Drishti_GS",
+  "data": {
+    "root_dir": "./data/OPTIC/",
+    "dataset_name": "OD-OC-Segmentation",
+    "image_size": [
+      512,
+      512,
+      3
+    ],
+    "label_size": [
+      512,
+      512
+    ],
+    "pad_size": [
+      512,
+      512,
+      3
+    ],
+    "crop_size": [
+      512,
+      512,
+      3
+    ],
+    "source_datasets": [
+      "Drishti_GS"
+    ],
+    "target_datasets": [
+      "BinRushed", "Magrabia", "REFUGE", "ORIGA"
+    ],
+    "data_aug_policy": "Prostate_affine_elastic_intensity",
+    "image_format_name": "{pid}/t2_img_clipped.nii.gz",
+    "label_format_name": "{pid}/label_clipped.nii.gz",
+    "num_classes": 2,
+    "use_cache": true,
+    "keep_orig_image_label_pair_for_training": true
+  },
+  "segmentation_model": {
+    "network_type": "FCN_16_standard_no_STN",
+    "num_classes": 2
+  },
+  "nflows_model": {
+    "mixstyle_layer": [3],
+    "latent_size": 16,
+    "n_flows": 4,
+    "clamp_value": 25.0,
+    "normalize_input": false,
+    "noise_value": 0.0
+  },
+  "learning": {
+    "separate_training": true,
+    "lr": 0.0001,
+    "n_epochs": 200,
+    "max_iteration": 50000,
+    "batch_size": 20,
+    "use_gpu": true,
+    "optimizer_type":"AdamW",
+    "grad_clip_norm": 5.0
+  },
+  "output": {
+    "save_epoch_every_num_epochs": 20,
+    "save_stats_every_num_epochs": 20,
+    "eval_epoch_every_num_epochs": 10
+  }
+}

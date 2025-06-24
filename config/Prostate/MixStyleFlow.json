@@ -1,0 +1,79 @@
+{
+  "name": "nflows_mixing_training",
+  "data": {
+    "root_dir": "./data/Prostate/G-MedicalDecathlon",
+    "dataset_name": "Prostate",
+    "image_size": [
+      288,
+      288,
+      1
+    ],
+    "label_size": [
+      288,
+      288
+    ],
+    "pad_size": [
+      288,
+      288,
+      1
+    ],
+    "crop_size": [
+      224,
+      224,
+      1
+    ],
+    "data_aug_policy": "Prostate_affine_elastic_intensity",
+    "image_format_name": "{pid}/t2_img_clipped.nii.gz",
+    "label_format_name": "{pid}/label_clipped.nii.gz",
+    "num_classes": 3,
+    "use_cache": true,
+    "keep_orig_image_label_pair_for_training": true
+  },
+  "segmentation_model": {
+    "network_type": "FCN_16_standard_no_STN",
+    "num_classes": 2
+  },
+  "learning": {
+    "apply_nflows_mixing": true,
+    "separate_training": true,
+    "lr": 0.0001,
+    "n_epochs": 1600,
+    "max_iteration": 50000,
+    "batch_size": 20,
+    "use_gpu": true,
+    "optimizer_type":"AdamW",
+    "load_pretrained_model": false
+  },
+  "output": {
+    "save_epoch_every_num_epochs": 100,
+    "save_pics_every_num_epochs": 200
+  },
+    "nflows_model": {
+    "prob": 0.5,
+    "decoder_layers_indexes": {
+      "2": {
+        "latent_size": 32,
+        "n_flows": 4,
+        "clamp_value": 25.0,
+        "normalize_input": false,
+        "temperature": 3.5
+      },
+      "3": {
+        "latent_size": 16,
+        "n_flows": 4,
+        "clamp_value": 25.0,
+        "normalize_input": false,
+        "temperature": 2.5
+      },
+      "4": {
+        "latent_size": 16,
+        "n_flows": 4,
+        "clamp_value": 25.0,
+        "normalize_input": false,
+        "temperature": 1.5
+      }
+    },
+    "mean_weights_format_name": "mean_nflows_model_lyr_{lyr_num}.pth",
+    "var_weights_format_name": "var_nflows_model_lyr_{lyr_num}.pth"
+  }
+}
