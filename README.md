@@ -23,7 +23,7 @@ This work was trained and evaluated on the following publicly available datasets
 
 ## Training and Evaluation
 
-The training process is divided into two phases.
+The training process is divided into three phases.
 
 ### Phase I: Train the Base Model
 
@@ -50,3 +50,43 @@ CUDA_VISIBLE_DEVICES=0 python train_adv_supervised_segmentation_triplet.py \
     --data_setting 'all' \
     --auto_test \
     --log
+```
+
+### Phase II: Train the Normalizing Flows  
+
+In this phase, the base model's weights are **frozen**. We then train two normalizing flow modules to learn the distribution of feature statistics (mean and standard deviation) from the source domain.
+
+---
+
+#### 1. Prepare Trained Weights
+
+First, you need to copy the pre-trained model weights from Phase I into a dedicated directory for this phase.
+
+```bash
+# Create a new directory for the weights if it doesn't already exist
+mkdir -p weights/BinRushed/
+
+# Copy the trained model from Phase I into the new directory
+cp save/path/to/your/phase_I_model.pth weights/BinRushed/
+```
+
+
+#### 2. Run the Training Script
+
+Navigate to the `training_normalizing_flows` directory to execute the training script.
+
+**Important**: You must select the correct JSON configuration file. The correct file depends on three factors:
+* The **dataset** (e.g., `OPTIC`)
+* The **layer number** where the flows are applied (e.g., `L2`)
+* The **source dataset name** (e.g., `BinRushed`)
+
+Execute the following command in your terminal. Be sure to update the `--json_config_path` to point to the correct configuration file for your setup.
+
+```bash
+# Set the visible CUDA device and run the training script
+CUDA_VISIBLE_DEVICES=0 python train_adv_supervised_segmentation_triplet.py \
+    --json_config_path config/OPTIC/training_mean_var_nflows_OPTIC_L2_BinRushed1.json \
+    --seed 40 \
+    --log \
+    --test_model_dir_path weights/BinRushed/
+```
