@@ -20,3 +20,33 @@ This work was trained and evaluated on the following publicly available datasets
 
 * **[Prostate Segmentation](https://drive.google.com/file/d/1fMPqHETCvohh1e6D2rIlddWPLfHuyI8j/view?usp=sharing)**: Prostate MRI scans across seven different domains (Medical Decathlon, Sites A–F). Trained on Medical Decathlon, tested on six unseen domains..
 * **[OD/OC Segmentation](https://zenodo.org/record/8009107)**: Fundus images from five different domains for optic disc/optic cup (OD/OC) segmentation.
+
+## Training and Evaluation
+
+The training process is divided into two phases.
+
+### Phase I: Train the Base Model
+
+This phase involves training the base dual-decoder model on the source dataset without any domain generalization techniques.
+
+#### 1. Configure the Settings
+
+Based on your dataset, open the relevant configuration file. For the OC/OD segmentation dataset, this is `config/OPTIC/standard_training.json`.
+
+Modify the following arguments to match your environment:
+* `"root_dir"`: Set this to the path of the directory containing all domain folders.
+* `"source_datasets"`: Set to the name of your source domain directory (e.g., `["BinRushed"]`).
+* `"target_datasets"`: Set to a list of your target domain directories (e.g., `["Magrabia", "REFUGE", "ORIGA"]`).
+  
+#### 2. Run the Training Script
+
+Execute the following command in your terminal to start the training:
+
+```bash
+CUDA_VISIBLE_DEVICES=0 python train_adv_supervised_segmentation_triplet.py \
+    --json_config_path ./config/OPTIC/standard_training.json \
+    --cval 0 \
+    --seed 40 \
+    --data_setting 'all' \
+    --auto_test \
+    --log
