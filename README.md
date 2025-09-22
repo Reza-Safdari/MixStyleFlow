@@ -90,3 +90,19 @@ CUDA_VISIBLE_DEVICES=0 python train_adv_supervised_segmentation_triplet.py \
     --log \
     --test_model_dir_path weights/BinRushed/
 ```
+### Phase III: Domain Generalization
+
+This phase involves training the segmentation model on source data, augmented with stylized images. These styles are generated in real-time using style feature augmentation from the pre-trained Normalizing Flows.
+
+To begin, copy the pre-trained Normalizing Flow weights from Phase II into a dedicated directory. Next, you must update your JSON configuration file (e.g., `config/OPTIC/MixStyleFlow_BinRushed.json`) to point to these weights by setting the correct paths for the `"mean_weights_format_name"` and `"var_weights_format_name"` keys. Finally, execute the training script below, which will train the segmentation model using the MixStyleFlow augmentation method.
+
+```bash
+# Run the MixStyleFlow training
+CUDA_VISIBLE_DEVICES=0 python train_adv_supervised_segmentation_triplet.py \
+    --json_config_path ./config/OPTIC/MixStyleFlow_BinRushed.json \
+    --cval 0 \
+    --seed 40 \
+    --data_setting 'all' \
+    --auto_test \
+    --log
+```
